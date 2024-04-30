@@ -23,11 +23,11 @@ const Home = () => {
 
   return (
     <>
-      <Box sx={{ padding: "20px" }}>
+      <Box sx={{ padding: "20px" , color:"white" }}>
         <Typography variant="h5">Home</Typography>
       </Box>
-      <Box sx={{ padding: "20px", borderBottom: "2px solid #3f3f3f" }}>
-        <ThreadForm />
+      <Box sx={{ padding: "20px", borderBottom: "2px solid #3f3f3f", color:"white" }}>
+        <ThreadForm callback={getThread} />
       </Box>
       {threads.map((thread) => (
         <ThreadCard key={thread.id} thread={thread} />

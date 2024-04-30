@@ -9,7 +9,7 @@ import { Box, Typography } from "@mui/material";
 const Footer = () => {
   return (
     <>
-      <Box sx={{ borderRadius: "10px", padding: "10px", bgcolor: "#262626" }}>
+      <Box sx={{ borderRadius: "10px", padding: "10px", bgcolor: "#262626", color: "white" }}>
         <Box
           sx={{
             display: "flex",
@@ -20,7 +20,7 @@ const Footer = () => {
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <Typography variant="body2">
-              Develop by Muhamad Ravi Farhan ●
+              Develop by Ravi Farhan ●
             </Typography>
             <GitHub fontSize="small" />
             <LinkedIn fontSize="small" />

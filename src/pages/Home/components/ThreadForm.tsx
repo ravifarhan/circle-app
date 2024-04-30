@@ -1,30 +1,63 @@
 import { Avatar, Box, Button, TextField } from "@mui/material";
 import { useAppSelector } from "../../../store";
 import { MouseEvent, useState } from "react";
-import { Image } from "@mui/icons-material";
 import { createThread } from "../../../lib/api/call/thread";
+import { AddPhotoAlternateOutlined } from "@mui/icons-material";
 
-const ThreadForm = () => {
+interface ThreadFormProps {
+  threadId?: number;
+  callback?: () => void;
+}
+
+const ThreadForm: React.FC<ThreadFormProps> = ({ threadId, callback }) => {
+  const auth = useAppSelector((state) => state.auth);
   const profile = useAppSelector((state) => state.auth.user);
   const _host_url = "http://localhost:5000/uploads/";
 
   const [threadPost, setThreadPost] = useState<{
     content: string;
     image: FileList | null;
-  }>({ content: "", image: null });
+    threadId: number;
+    imagePreview: string[];
+  }>({ content: "", image: null, threadId: 0, imagePreview: [] });
 
   const handlePost = async (e: MouseEvent) => {
     try {
       e.preventDefault();
+
+      if (threadId) {
+        threadPost.threadId = threadId;
+      }
+
       const res = await createThread(threadPost);
 
       console.log(res);
+
+      if (callback) {
+        callback();
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  return (
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const previewUrls: string[] = [];
+      Array.from(files).forEach((file) => {
+        const url = URL.createObjectURL(file);
+        previewUrls.push(url);
+      });
+      setThreadPost({
+        ...threadPost,
+        image: files,
+        imagePreview: previewUrls,
+      });
+    }
+  };
+
+  return !auth.user ? null : (
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
         <Avatar
@@ -36,7 +69,7 @@ const ThreadForm = () => {
           alt="avatar"
         />
         <TextField
-          label="What's on your mind?"
+          label={threadId ? "Type your reply" : "What's on your mind?"}
           autoComplete="off"
           value={threadPost.content}
           onChange={(e) =>
@@ -62,21 +95,20 @@ const ThreadForm = () => {
           InputLabelProps={{ sx: { color: "gray" } }}
           InputProps={{ sx: { color: "white" } }}
         />
-        <label htmlFor="button-file">
-          Image {threadPost.image?.length}
-          <Image sx={{ cursor: "pointer", color: "#04a51e" }} />
+        <label htmlFor="image">
+          {/* <LuImagePlus  color="#04a51e" cursor={"pointer"} size={20} /> */}
+          <AddPhotoAlternateOutlined sx={{ color: "#04a51e" }} cursor={"pointer"} />
         </label>
         <input
-          id="button-file"
+          id="image"
           type="file"
           hidden
           accept="image/*"
           multiple
           max={4}
-          onChange={(e) =>
-            setThreadPost({ ...threadPost, image: e.target.files })
-          }
+          onChange={handleImageChange}
         />
+
         <Button
           variant="contained"
           size="small"
@@ -88,22 +120,25 @@ const ThreadForm = () => {
             ":hover": { backgroundColor: "#04a51e" },
           }}
         >
-          Post
+          {threadId ? "Reply" : "Post"}
         </Button>
-        {/* <Box>
-          <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-            {threadPost.image?.length !== null && threadPost.image.map((thread) => (
-              <ImageListItem key={item.img}>
-                <img
-                  srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                  src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                  alt={item.title}
-                  loading="lazy"
-                />
-              </ImageListItem>
+      </Box>
+      <Box sx={{ display: "flex" }}>
+        {threadPost.imagePreview.length > 0 && (
+          <Box sx={{ display: "flex", gap: "5px", marginTop: "10px"}}>
+            {threadPost.imagePreview.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt={`preview-${index}`}
+                style={{
+                  borderRadius: "5px",
+                  maxWidth: "50%",
+                }}
+              />
             ))}
-          </ImageList>
-        </Box> */}
+          </Box>
+        )}
       </Box>
     </>
   );

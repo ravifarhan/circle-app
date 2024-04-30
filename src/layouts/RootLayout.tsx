@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SET_LOGIN } from "../store/slice/auth";
 import { getProfile } from "../lib/api/call/profile";
 import { useAppDispatch } from "../store";
@@ -11,6 +11,12 @@ import Footer from "../components/Footer";
 
 const RootLayout = () => {
   const dispatch = useAppDispatch();
+  const [showProfile, setShowProfile] = useState(false);
+
+  useEffect(() => {
+    setShowProfile(location.pathname !== "/profile");
+  }, [location.pathname]);
+
   const checkLogin = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -59,7 +65,7 @@ const RootLayout = () => {
           scrollbarWidth: "none",
         }}
       >
-        <ProfileCard />
+        {showProfile && <ProfileCard />}
         <SuggestedFollow />
         <Footer />
       </Box>

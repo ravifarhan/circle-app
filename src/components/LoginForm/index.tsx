@@ -26,7 +26,7 @@ const LoginForm = () => {
       const profile = await getProfile(token);
 
       localStorage.setItem("token", token);
-      
+
       dispatch(SET_LOGIN({ user: profile.data.data, token }));
       navigate("/");
     } catch (error) {
@@ -77,7 +77,6 @@ const LoginForm = () => {
           type="text"
           InputLabelProps={{ sx: { color: "gray" } }}
           InputProps={{ sx: { color: "white" } }}
-          // sx={{ border: "2px solid gray", borderRadius: "10px" }}
         />
         <TextField
           label="Password*"
@@ -99,6 +98,7 @@ const LoginForm = () => {
           type="submit"
           variant="contained"
           sx={{
+            textTransform: "none",
             backgroundColor: "#04a51e",
             fontWeight: "bold",
             borderRadius: "20px",

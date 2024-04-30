@@ -25,11 +25,11 @@ const NoPage = () => {
               borderRadius: "20px",
               backgroundColor: "#04a51e",
               fontWeight: "bold",
-              textTransform: "capitalize",
+              textTransform: "none",
               ":hover": { backgroundColor: "#04a51e" },
             }}
           >
-            Go Home
+            Go to Home
           </Button>
         </Link>
       </Box>

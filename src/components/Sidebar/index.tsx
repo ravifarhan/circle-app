@@ -2,11 +2,9 @@ import { Box, Button, Icon, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import {
-  // AccountCircle,
   AccountCircleOutlined,
   FavoriteBorder,
   Logout,
-  // PersonSearch,
   PersonSearchOutlined,
 } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -25,7 +23,7 @@ const Menu = [
   },
   {
     title: "Follows",
-    link: "/follow",
+    link: "/follows",
     icon: <FavoriteBorder />,
   },
   {
@@ -40,7 +38,7 @@ const Sidebar = () => {
   const auth = useAppSelector((state) => state.auth);
 
   return !auth.user ? (
-    <Box sx={{ marginTop: "20px" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "20px", }}>
       <Link to="/login">
         <Button
           variant="contained"
@@ -53,6 +51,20 @@ const Sidebar = () => {
           }}
         >
           Login
+        </Button>
+      </Link>
+      <Link to="/register">
+        <Button
+          variant="contained"
+          sx={{
+            width: "100%",
+            borderRadius: "10px",
+            backgroundColor: "#04a51e",
+            fontWeight: "bold",
+            ":hover": { backgroundColor: "#04a51e" },
+          }}
+        >
+          Register
         </Button>
       </Link>
     </Box>
@@ -69,8 +81,9 @@ const Sidebar = () => {
         {Menu.map((menu) => (
           <Box key={menu.title} sx={{ display: "flex", marginTop: "20px" }}>
             <Link
-              to={menu.link}
+              to={menu.link === "/profile" ? `/profile/${auth.user?.user.id}` : menu.link}
               style={{
+                color: "white",
                 textDecoration: "none",
                 display: "flex",
                 alignItems: "center",
@@ -110,12 +123,12 @@ const Sidebar = () => {
             onClick={() => dispatch(SET_LOGOUT())}
             variant="text"
             size="small"
-            sx={{ ":hover": { backgroundColor: "transparent" } }}
+            sx={{ color: "white", ":hover": { backgroundColor: "transparent" } }}
           >
             <Logout />
             <Typography
               variant="h6"
-              sx={{ marginLeft: "5px", textTransform: "capitalize" }}
+              sx={{ color: "white", marginLeft: "5px", textTransform: "capitalize" }}
             >
               Logout
             </Typography>

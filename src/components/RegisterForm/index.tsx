@@ -1,7 +1,36 @@
 import { Box, Typography, TextField, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { registerAPI } from "../../lib/api/call/register";
+
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
+  const [formRegister, setFormRegister] = useState<{
+    fullname: string;
+    email: string;
+    username: string;
+    password: string;
+  }>({
+    fullname: "",
+    email: "",
+    username: "",
+    password: "",
+  });
+
+  const handleRegister = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+        const res = await registerAPI(formRegister);
+
+        console.log(res);
+        navigate("/login");
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Box
@@ -18,6 +47,7 @@ const RegisterForm = () => {
         <Typography variant="h6">Create an account Circle </Typography>
       </Box>
       <Box
+        onSubmit={handleRegister}
         sx={{
           width: "30%",
           display: "flex",
@@ -30,6 +60,10 @@ const RegisterForm = () => {
       >
         <TextField
           label="Fullname*"
+          value={formRegister.fullname}
+          onChange={(e) => {
+            setFormRegister({ ...formRegister, fullname: e.target.value });
+          }}
           variant="outlined"
           type="text"
           InputLabelProps={{ sx: { color: "gray" } }}
@@ -37,13 +71,21 @@ const RegisterForm = () => {
         />
         <TextField
           label="Email*"
+          value={formRegister.email}
+          onChange={(e) => {
+            setFormRegister({ ...formRegister, email: e.target.value });
+          }}
           variant="outlined"
-          type="text"
+          type="email"
           InputLabelProps={{ sx: { color: "gray" } }}
           InputProps={{ sx: { color: "white" } }}
         />
         <TextField
           label="Username*"
+          value={formRegister.username}
+          onChange={(e) => {
+            setFormRegister({ ...formRegister, username: e.target.value });
+          }}
           variant="outlined"
           type="text"
           InputLabelProps={{ sx: { color: "gray" } }}
@@ -51,6 +93,10 @@ const RegisterForm = () => {
         />
         <TextField
           label="Password*"
+          value={formRegister.password}
+          onChange={(e) => {
+            setFormRegister({ ...formRegister, password: e.target.value });
+          }}
           variant="outlined"
           type="password"
           InputLabelProps={{ sx: { color: "gray" } }}
@@ -60,6 +106,7 @@ const RegisterForm = () => {
           type="submit"
           variant="contained"
           sx={{
+            textTransform: "none",
             backgroundColor: "#04a51e",
             fontWeight: "bold",
             borderRadius: "20px",

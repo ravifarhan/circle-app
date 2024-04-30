@@ -1,20 +1,37 @@
 import { Avatar, Box, Button, Typography } from "@mui/material";
 import { useAppSelector } from "../../store";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import ModalDialog from "../Modal";
+import EditProfile from "../EditForm";
 
 const ProfileCard = () => {
   const profile = useAppSelector((state) => state.auth.user);
   const _host_url = "http://localhost:5000/uploads/";
   const auth = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
+  const handleClick = () => {
+    navigate("/follows");
+  }
 
   return !auth.user ? null : (
     <>
-      <Box sx={{ borderRadius: "10px", padding: "10px", bgcolor: "#262626" }}>
-        <Typography variant="body1" sx={{ marginBottom: "10px" }}>My Profile</Typography>
+      <Box sx={{ borderRadius: "10px", padding: "10px", bgcolor: "#262626", color: "white" }}>
+        <Typography variant="body1" sx={{ marginBottom: "10px" }}>
+          My Profile
+        </Typography>
         <img
           src={
             profile?.cover
               ? _host_url + profile.cover
-              : "https://images.unsplash.com/32/Mc8kW4x9Q3aRR3RkP5Im_IMG_4417.jpg?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              : _host_url + "default.jpg"
           }
           alt="cover"
           width="100%"
@@ -22,9 +39,18 @@ const ProfileCard = () => {
           style={{ borderRadius: "10px", objectFit: "cover" }}
         />
         <Box
-          sx={{ display: "flex",  marginTop: "-30px", justifyContent: "space-between", alignItems: "flex-end",paddingInlineStart: "20px" }}
+          sx={{
+            display: "flex",
+            marginTop: "-30px",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            paddingInlineStart: "20px",
+          }}
         >
           <Avatar
+            onClick={() => {
+              navigate("/profile");
+            }}
             src={
               profile?.avatar
                 ? _host_url + profile.avatar
@@ -38,6 +64,7 @@ const ProfileCard = () => {
             }}
           />
           <Button
+            onClick={toggleModal}
             variant="outlined"
             size="small"
             sx={{
@@ -51,16 +78,45 @@ const ProfileCard = () => {
           >
             Edit Profile
           </Button>
+          <ModalDialog callback={toggleModal} show={showModal}>
+            <EditProfile callback={toggleModal} />
+          </ModalDialog>
         </Box>
         <Box>
-          <Typography variant="body1">✨{profile?.user.fullname}✨</Typography>
+          <Typography variant="body1">{profile?.user.fullname}</Typography>
           <Typography variant="caption" sx={{ color: "#b2b2b2" }}>
             @{profile?.user.username}
           </Typography>
           <Typography variant="subtitle1">{profile?.bio}</Typography>
-          <Typography variant="caption">
-            100 Followers | 100 Following
-          </Typography>
+          {/* <Typography variant="caption"> */}
+          <Button
+          onClick={handleClick}
+            size="small"
+            sx={{
+              marginRight: "10px",
+              textTransform: "none",
+              color: "white",
+              minWidth: "auto",
+              p: "0px",
+              ":hover": { backgroundColor: "transparent" },
+            }}
+          >
+            {profile?.user._count?.following} Followers
+          </Button>
+          <Button
+            onClick={handleClick}
+            size="small"
+            sx={{
+              textTransform: "none",
+              color: "white",
+              minWidth: "auto",
+              p: "0px",
+              ":hover": { backgroundColor: "transparent" },
+            }}
+          >
+            {profile?.user._count?.follower} Following
+          </Button>
+          {/* </Typography> */}
         </Box>
       </Box>
     </>
